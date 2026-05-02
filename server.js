@@ -18,7 +18,8 @@ process.on("unhandledRejection", (err) => {
   process.exit(1);
 });
 
-// Handle uncaught exceptions
+// Handle uncaught exceptions and errors
+
 process.on("uncaughtException", (err) => {
   logger.error(`Uncaught Exception: ${err.message}`);
   process.exit(1);
