@@ -31,6 +31,8 @@ app.use(
   })
 );
 
+app.options("*", cors());
+
 // ── Rate Limiting ─────────────────────────────────────────────
 const limiter = rateLimit({
   windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
