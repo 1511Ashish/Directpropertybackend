@@ -21,17 +21,27 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(",")
   : ["http://localhost:3000"];
 
-app.use(
-  cors({
-    origin: (origin, cb) => {
-      if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
-      cb(new Error("Not allowed by CORS"));
-    },
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin: (origin, cb) => {
+    // allow requests with no origin
+    // like Postman/mobile apps/server-to-server
+    if (!origin) {
+      return cb(null, true);
+    }
 
-app.options("*", cors());
+    // allow whitelisted origins
+    if (allowedOrigins.includes(origin)) {
+      return cb(null, true);
+    }
+
+    // reject other origins WITHOUT throwing error
+    return cb(null, false);
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 // ── Rate Limiting ─────────────────────────────────────────────
 const limiter = rateLimit({
