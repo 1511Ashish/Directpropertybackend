@@ -23,6 +23,16 @@ const refreshTokenSchema = Joi.object({
   refreshToken: Joi.string().required(),
 });
 
+const changePasswordSchema = Joi.object({
+  currentPassword: Joi.string().required(),
+  newPassword: Joi.string().min(8).required(),
+});
+
+const updateEmailSchema = Joi.object({
+  currentPassword: Joi.string().required(),
+  email: Joi.string().email().required(),
+});
+
 // ── Property ──────────────────────────────────────────────────
 const propertyCreateSchema = Joi.object({
   title: Joi.string().max(200).required(),
@@ -42,6 +52,12 @@ const propertyCreateSchema = Joi.object({
   bedrooms: Joi.number().min(0).optional(),
   bathrooms: Joi.number().min(0).optional(),
   area: Joi.number().min(0).optional(),
+  constructionSize: Joi.number().min(0).optional(),
+  kitchen: Joi.number().min(0).optional(),
+  hall: Joi.number().min(0).optional(),
+  tower: Joi.string().optional(),
+  otherRooms: Joi.array().items(Joi.string()).optional(),
+  facing: Joi.string().valid("North", "East", "West", "South").optional(),
   isFeatured: Joi.boolean().optional(),
 });
 
@@ -71,6 +87,8 @@ module.exports = {
   loginSchema,
   registerSchema,
   refreshTokenSchema,
+  changePasswordSchema,
+  updateEmailSchema,
   propertyCreateSchema,
   propertyUpdateSchema,
   leadCreateSchema,

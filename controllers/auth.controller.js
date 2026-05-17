@@ -106,4 +106,44 @@ const getMe = catchAsync(async (req, res) => {
   });
 });
 
-module.exports = { register, login, refreshToken, logout, getMe };
+// â”€â”€ Change Password â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const changePassword = catchAsync(async (req, res, next) => {
+  const { currentPassword, newPassword } = req.body;
+
+  const admin = await Admin.findById(req.admin._id).select("+password +refreshToken");
+  if (!admin || !(await admin.comparePassword(currentPassword))) {
+    return next(new AppError("Current password is incorrect.", 401));
+  }
+
+  admin.password = newPassword;
+  admin.refreshToken = null;
+  await admin.save();
+
+  sendResponse(res, 200, "Password changed successfully. Please log in again.");
+});
+
+// â”€â”€ Update Current Admin Email â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const updateEmail = catchAsync(async (req, res, next) => {
+  const { currentPassword, email } = req.body;
+  const normalizedEmail = email.toLowerCase().trim();
+
+  const admin = await Admin.findById(req.admin._id).select("+password");
+  if (!admin || !(await admin.comparePassword(currentPassword))) {
+    return next(new AppError("Current password is incorrect.", 401));
+  }
+
+  const existing = await Admin.findOne({ email: normalizedEmail, _id: { $ne: admin._id } });
+  if (existing) return next(new AppError("An admin with this email already exists.", 400));
+
+  admin.email = normalizedEmail;
+  await admin.save();
+
+  sendResponse(res, 200, "Email updated successfully", {
+    id: admin._id,
+    name: admin.name,
+    email: admin.email,
+    role: admin.role,
+  });
+});
+
+module.exports = { register, login, refreshToken, logout, getMe, changePassword, updateEmail };

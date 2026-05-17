@@ -1,10 +1,24 @@
 const router = require("express").Router();
 const Admin = require("../models/Admin.model");
-const { register, login, refreshToken, logout, getMe } = require("../controllers/auth.controller");
+const {
+  register,
+  login,
+  refreshToken,
+  logout,
+  getMe,
+  changePassword,
+  updateEmail,
+} = require("../controllers/auth.controller");
 const { protect, restrictTo } = require("../middleware/auth.middleware");
 const catchAsync = require("../middleware/catchAsync");
 const validate = require("../middleware/validate");
-const { loginSchema, registerSchema, refreshTokenSchema } = require("../validations/schemas");
+const {
+  loginSchema,
+  registerSchema,
+  refreshTokenSchema,
+  changePasswordSchema,
+  updateEmailSchema,
+} = require("../validations/schemas");
 
 const bootstrapOrProtect = catchAsync(async (req, res, next) => {
   const adminCount = await Admin.countDocuments();
@@ -39,6 +53,8 @@ router.post(
 // Protected
 router.use(protect);
 router.get("/me", getMe);
+router.patch("/me/password", validate(changePasswordSchema), changePassword);
+router.patch("/me/email", validate(updateEmailSchema), updateEmail);
 router.post("/logout", logout);
 
 module.exports = router;

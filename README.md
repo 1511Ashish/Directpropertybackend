@@ -297,6 +297,58 @@ Get the currently authenticated admin's profile. **Protected.**
 
 ---
 
+#### PATCH `/auth/me/password`
+Change the currently authenticated admin's password. **Protected.**
+
+This updates only the logged-in admin account and clears the stored refresh token, so the admin must log in again.
+
+**Request Body:**
+```json
+{
+  "currentPassword": "oldpassword",
+  "newPassword": "newsecurepassword"
+}
+```
+
+**Success Response `200`:**
+```json
+{
+  "success": true,
+  "message": "Password changed successfully. Please log in again."
+}
+```
+
+---
+
+#### PATCH `/auth/me/email`
+Update the currently authenticated admin's email. **Protected.**
+
+This keeps the same admin ID and does not change or remove properties, leads, or other related data.
+
+**Request Body:**
+```json
+{
+  "currentPassword": "securepassword",
+  "email": "newadmin@example.com"
+}
+```
+
+**Success Response `200`:**
+```json
+{
+  "success": true,
+  "message": "Email updated successfully",
+  "data": {
+    "id": "64f1a...",
+    "name": "Admin User",
+    "email": "newadmin@example.com",
+    "role": "super_admin"
+  }
+}
+```
+
+---
+
 ### 🏠 Property Endpoints
 
 #### GET `/properties`
@@ -339,6 +391,12 @@ Get all properties with pagination, filtering, and search. **Public.**
         "bedrooms": 3,
         "bathrooms": 2,
         "area": 1450,
+        "constructionSize": 1200,
+        "kitchen": 1,
+        "hall": 1,
+        "tower": "Tower A",
+        "otherRooms": ["Pooja Room", "Study Room"],
+        "facing": "North",
         "createdAt": "2024-09-01T00:00:00.000Z"
       }
     ],
@@ -378,6 +436,12 @@ Get a single property by MongoDB ID or slug. **Public.**
     "bedrooms": 3,
     "bathrooms": 2,
     "area": 1450,
+    "constructionSize": 1200,
+    "kitchen": 1,
+    "hall": 1,
+    "tower": "Tower A",
+    "otherRooms": ["Pooja Room", "Study Room", "Guest Room"],
+    "facing": "North",
     "isFeatured": true,
     "createdAt": "2024-09-01T00:00:00.000Z"
   }
@@ -412,6 +476,12 @@ Content-Type: multipart/form-data
 | `bedrooms` | number | ❌ |
 | `bathrooms` | number | ❌ |
 | `area` | number | ❌ |
+| `constructionSize` | number | ❌ |
+| `kitchen` | number | ❌ |
+| `hall` | number | ❌ |
+| `tower` | string | ❌ |
+| `otherRooms` | string[] | ❌ |
+| `facing` | string (`North`, `East`, `West`, `South`) | ❌ |
 | `isFeatured` | boolean | ❌ |
 | `images` | file[] | ❌ (max 10) |
 

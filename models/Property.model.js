@@ -61,6 +61,20 @@ const propertySchema = new mongoose.Schema(
     bedrooms: { type: Number, min: 0 },
     bathrooms: { type: Number, min: 0 },
     area: { type: Number, min: 0 }, // square feet
+    constructionSize: { type: Number, min: 0 }, // square feet
+    kitchen: { type: Number, min: 0 },
+    hall: { type: Number, min: 0 },
+    tower: { type: String, trim: true },
+    otherRooms: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+    facing: {
+      type: String,
+      enum: ["North", "East", "West", "South"],
+    },
     isFeatured: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false, index: true }, // Soft delete
     createdBy: {
